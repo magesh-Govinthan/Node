@@ -6,6 +6,6 @@ const router=express.Router();
 
 router.post("/register",registerUser)
 router.post("/login",loginUser)
-router.get("/getuser",authMiddleware,getUser)
+router.get("/getUser",authMiddleware,getUser)
 
 export default router

@@ -31,9 +31,9 @@ export const loginUser = async (req, res) => {
         if (!passwordMatch) {
             return res.status(403).json({ message: "Invalid Credentials" });
         }
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-        user.token = token;
-        res.status(200).json({ message: "Login Success", token: token });
+         const token = jwt.sign( { id: user._id, email: user.email },process.env.JWT_SECRET,{ expiresIn: "30h" });
+
+          res.json({message: "Login successful",token});
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "login failed, Internal Server Error" });

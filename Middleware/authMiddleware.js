@@ -4,22 +4,24 @@ import User from '../Model/schema.js';
 
 dotenv.config();
 
-const authMiddleware = async (req, res, next) => {
-    const token = req.header.authorization;
-    if (!token) {
-        return res.status(401).json({message:"Token is missing"})
-    }
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        const user = await User.findById(req.user._id);
+export const authMiddleware = async (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
 
-        if (user.role != 'admin') {
-            return res.status(401).json({ message: 'Access Deny' });
-        }
-        next();
-    } catch (error) {
-        res.status(500).json({message:'Invalid Token, Internal Server Error'})
+  if (!token) return res.status(401).json({ message: "Token Missing!" });
+
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    req.user = await User.findById(decoded.userId).select("-password");
+
+    if (!req.user) {
+      return res.status(404).json({ message: "User not found" });
     }
-}
+
+    next();
+  } catch (error) {
+    res.status(401).json({ message: "Invalid Token" });
+  }
+};
 export default authMiddleware;

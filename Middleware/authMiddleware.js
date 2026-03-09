@@ -12,7 +12,7 @@ dotenv.config();
 
 export const authMiddleware = async (req, res, next) => {
   try {
-    // Get token from header or query
+    
     const authHeader = req.header("Authorization") || req.query.token;
 
     if (!authHeader) {
@@ -22,7 +22,7 @@ export const authMiddleware = async (req, res, next) => {
       });
     }
 
-    // Extract token
+  
     const token = authHeader.startsWith("Bearer ")
       ? authHeader.split(" ")[1]
       : authHeader;

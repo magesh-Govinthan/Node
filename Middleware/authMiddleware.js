@@ -7,21 +7,35 @@ dotenv.config();
 export const authMiddleware = async (req, res, next) => {
  const authHeader = req.header("Authorization") || req.query.token;
 
-  if (!token) return res.status(401).json({ message: "Token Missing!" });
-
+  if (!authHeader) {
+    return res.status(401).json({ message: "Token is missing" });
+  }
 
   try {
+    
+    const token = authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "Invalid Token Format" });
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
 
-    req.user = await User.findById(decoded.userId).select("-password");
+    const user = await User.findById(req.user._id);
 
-    if (!req.user) {
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role !== "admin") {
+      return res.status(403).json({ message: "Access Denied" });
     }
 
     next();
   } catch (error) {
-    res.status(401).json({ message: "Invalid Token" });
+    return res.status(401).json({ message: "Invalid or Expired Token" });
   }
 };
+
 export default authMiddleware;

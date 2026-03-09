@@ -32,7 +32,7 @@ export const authMiddleware = async (req, res, next) => {
     }
 
     if (user.role !== "admin") {
-      return res.status(200).json({ message: "Welcome Back " });
+      return res.status(200).json({ message: "Welcome Back ,Tokan is valid" });
     }
 
     next();

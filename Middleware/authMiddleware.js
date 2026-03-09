@@ -23,14 +23,16 @@ export const authMiddleware = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
 
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user.id);
+  
+    
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     if (user.role !== "admin") {
-      return res.status(403).json({ message: "Access Denied" });
+      return res.status(200).json({ message: "Welcome Back " });
     }
 
     next();

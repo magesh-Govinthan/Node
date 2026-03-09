@@ -13,7 +13,8 @@ export const authMiddleware = async (req, res, next) => {
 
   try {
     
-    const token = authHeader.split(" ")[1];
+     const token = authHeader.startsWith("Bearer ")
+      ? authHeader.split(" ")[1] : authHeader;
 
     if (!token) {
       return res.status(401).json({ message: "Invalid Token Format" });
